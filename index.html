@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <title>RN Salary Calculator</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  <style type="text/css">
+    html, body, div, span, applet, object, iframe,
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+    a, abbr, acronym, address, big, cite, code,
+    del, dfn, em, img, ins, kbd, q, s, samp,
+    small, strike, strong, sub, sup, tt, var,
+    b, u, i, center,
+    dl, dt, dd, ol, ul, li,
+    fieldset, form, label, legend,
+    table, caption, tbody, tfoot, thead, tr, th, td,
+    article, aside, canvas, details, embed,
+    figure, figcaption, footer, header, hgroup,
+    menu, nav, output, ruby, section, summary,
+    time, mark, audio, video {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-size: 100%;
+      vertical-align: baseline;
+    }
+    /* HTML5 display-role reset for older browsers */
+    article, aside, details, figcaption, figure,
+    footer, header, hgroup, menu, nav, section {
+      display: block;
+    }
+    body {
+      line-height: 1;
+    }
+    ol, ul {
+      list-style: none;
+    }
+    blockquote, q {
+      quotes: none;
+    }
+    blockquote:before, blockquote:after,
+    q:before, q:after {
+      content: '';
+      content: none;
+    }
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    .mainBox {
+      margin: 20px auto;
+      width: 600px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      border-bottom-width: 3px;
+      background-color: #f2f2f2;
+    }
+
+    .box1 {
+      font: normal 13px arial;
+      color: #333;
+      padding: 20px 20px 2px;
+    }
+
+    .box2 {
+      font: bold 10px arial;
+      color: #666;
+      line-height: 13px;
+      padding: 5px 20px 5px 23px;
+      background-color: #bbb;
+      border: 2px solid #999;
+      border-width: 2px 0 1px;
+      display: block;
+    }
+
+    .link {
+      text-align: right;
+      font: normal 8px arial;
+      text-transform: uppercase;
+      color: #999;
+      margin: 4px 6px 2px;
+    }
+
+    .link a {
+      text-align: center;
+      font: normal 8px arial;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #999;
+      margin: 4px 0 2px;
+    }
+
+    h1 {
+      font: bold 20px arial;
+      margin: 0 0 10px;
+    }
+
+    .tag {
+      border-radius: 3px;
+      border: 1px solid #529332;
+      background-color: #8bc96f;
+      color: #333;
+      font: normal 13px arial;
+      text-align: center;
+      height: 25px;
+      width: 30px;
+      margin: 0 0 0 4px;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .disabled {
+      border: 1px solid #aaa;
+      background-color: #ccc;
+      color: #fff;
+    }
+
+    .extratag {
+      border: 1px solid #ffab23;
+      background-color: #ffec64;
+      color: #333;
+    }
+
+    .formInput {
+      border-radius: 3px;
+      border: 1px solid #ccc;
+      height: 23px;
+      width: 28px;
+      padding: 0;
+      margin: 0;
+      font: normal 13px arial;
+      text-align: center;
+    }
+
+    .legends {
+      font: normal 11px arial;
+      color: #999;
+      border-top: 1px solid #aaa;
+      margin: 10px 0 0;
+      padding: 3px;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    var app = angular.module('myApp', []);
+
+    app.controller('myCtrl', function($scope) {
+      $scope.hoursWorked = 12;
+      $scope.btnArr = 0;
+      $scope.btnTxt = ["M", "N"]
+      $scope.tag = ["Morning", "Night"]
+      $scope.hourlyRates = {
+        "regular": 30,
+        "shift2": 2.5,
+        "shift3": 4,
+        "weekend": 4,
+        "oncall": 1.5
+      };
+      $scope.btns = [{
+          label: "W",
+          tag: "Weekend",
+          state: false
+        },
+        {
+          label: "OC",
+          tag: "On Call",
+          state: false
+        }
+      ];
+
+      $scope.changeButtonState = function() {
+        switch ($scope.btnArr) {
+          case 0:
+            $scope.btnArr = 1;
+            break;
+          case 1:
+            $scope.btnArr = 0
+            break;
+        }
+      }
+
+      $scope.toggle = function() {
+        this.b.state = !this.b.state;
+        return this.b.state;
+      };
+
+      $scope.calculateWage = function(shift, hoursWorked, weekend, oncall) {
+        var hw = hoursWorked;
+        var hrr = $scope.hourlyRates["regular"]
+        var hrs2 = $scope.hourlyRates["shift2"]
+        var hrs3 = $scope.hourlyRates["shift3"]
+        var hrw = $scope.hourlyRates["weekend"]
+        var hroc = $scope.hourlyRates["oncall"]
+        var wage;
+
+        switch (shift) {
+          case "M":
+            wage = hrr * hw + hrs2 * 4 + (weekend ? hrw * hw : 0);
+            wage = oncall ? wage * hroc : wage;
+            break;
+          case "N":
+            wage = hrr * hw + hrs2 * 4 + hrs3 * 8 + (weekend ? hrw * hw : 0);
+            wage = oncall ? wage * hroc : wage;
+            break;
+        }
+        return wage;
+      }
+    });
+  </script>
+  <div class="mainBox">
+    <div class="box1">
+      <h1>RN Salary Calculator</h1>
+      <div ng-app="myApp" ng-controller="myCtrl">
+        Rate
+        <input type="text" ng-model="hourlyRates['regular']" size="2" class="formInput">
+        <input type="text" ng-model="hoursWorked" size="2" class="formInput" readonly=""> hrs
+        <button ng-model="btnArr" ng-Click="changeButtonState()" class="tag" title="{{tag[btnArr]}}" alt="{{tag[btnArr]}}">{{btnTxt[btnArr]}}</button> Shift
+        <button ng-click="toggle()" ng-class="{extratag:b.state}" ng-repeat="b in btns" class="tag disabled" title="{{b.tag}}" alt="{{b.tag}}">{{b.label}}</button> =
+        <b>${{calculateWage(btnTxt[btnArr], hoursWorked, btns[0].state, btns[1].state)}}</b>
+      </div>
+      <div class="legends">
+        <b>M</b> - Morning &nbsp;&nbsp; <b>N</b> - Night &nbsp;&nbsp; <b>W</b> - Weekend &nbsp;&nbsp; <b>OC</b> - On Call <i>(Please click on the tags above to see the result)</i>
+      </div>
+    </div>
+    <div class="box2">
+      7AM - 3PM Regular Rate<br>
+      3PM - 11PM Shift 2 (+ $2.5)<br>
+      11PM - 7AM Shift 3 (+ $4)<br>
+      Weekend (+ $4)<br>
+      On Call (time and a half)
+    </div>
+    <div class="link"><a href="http://www.prayas.com.np" alt="Prayas.Com.Np" title="Prayas.Com.Np">- By Prayas Shrestha</a></div>
+  </div>
+</body>
+
+</html>
